@@ -3,11 +3,13 @@ import logging
 import sys
 from os import getenv
 
-from aiogram import Bot, Dispatcher, Router, types
+from aiogram import Bot, Dispatcher, types
 from aiogram.enums import ParseMode
-from aiogram.filters import CommandStart
+from aiogram.filters import CommandStart, Command
 from aiogram.types import Message
-from aiogram.utils.markdown import hbold
+
+from translations import Translations
+from keyboard_layout import correct_layout, NotSupportedLayoutException
 
 TOKEN = getenv("BOT_TOKEN")
 
@@ -19,20 +21,38 @@ async def command_start_handler(message: Message) -> None:
     """
     This handler receives messages with `/start` command
     """
-    await message.answer(f"Hello, {hbold(message.from_user.full_name)}!")
+    await message.answer(Translations.get_translation("start"))
+
+
+@dp.message(Command("help"))
+async def command_start_handler(message: Message) -> None:
+    """
+    This handler receives messages with `/help` command
+    """
+    await message.answer(Translations.get_translation("help"))
 
 
 @dp.message()
-async def echo_handler(message: types.Message) -> None:
+async def fix_layout_handler(message: types.Message) -> None:
     """
-    Handler will forward receive a message back to the sender
-
-    By default, message handler will handle all message types (like a text, photo, sticker etc.)
+    Handler will correct text written using a wrong keyboard layout and send it back.
     """
     try:
-        await message.send_copy(chat_id=message.chat.id)
-    except TypeError:
-        await message.answer("Nice try!")
+        print(message.text)
+        if not message.text:
+            return await message.answer(
+                Translations.get_translation("nothing_to_correct")
+            )
+        corrected_text = correct_layout(message.text)
+        return await message.answer(corrected_text)
+    except NotSupportedLayoutException:
+        return await message.answer(
+            Translations.get_translation("not_supported_layout")
+        )
+    except:
+        return await message.answer(
+            Translations.get_translation("something_went_wrong")
+        )
 
 
 async def main() -> None:
