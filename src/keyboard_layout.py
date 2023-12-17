@@ -20,9 +20,7 @@ def detect_current_and_desired_layout(text):
         if char in EnglishOnlyChars:
             foundEnglishOnlyChars = True
         if char in RussianOnlyChars:
-            print(char, RussianOnlyChars)
             foundRussianOnlyChars = True
-    print(foundEnglishOnlyChars, foundRussianOnlyChars)
     if foundEnglishOnlyChars and not foundRussianOnlyChars:
         return (EnglishLayoutKey, RussianLayoutKey)
     elif foundRussianOnlyChars and not foundEnglishOnlyChars:
@@ -53,7 +51,6 @@ def change_char_layout(char, current_layout, desired_layout):
 def correct_layout(text):
     result_text = ""
     current_layout, desired_layout = detect_current_and_desired_layout(text)
-    print(current_layout, desired_layout, EnglishOnlyChars, RussianOnlyChars)
     if current_layout == MixedLayoutKey or desired_layout == MixedLayoutKey:
         raise NotSupportedLayoutException(
             "Mixed keyboard layout is not supported."
