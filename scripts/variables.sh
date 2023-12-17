@@ -1,4 +1,6 @@
-IMAGE_VERSION="0.0.1"
-IMAGE_TAG="text-correction-bot"
+#!/bin/bash
 
-CONTAINER_NAME="text-correction-bot"
+export IMAGE_VERSION="0.0.1"
+export IMAGE_TAG="text-correction-bot"
+
+export CONTAINER_NAME="text-correction-bot"
