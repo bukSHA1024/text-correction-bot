@@ -38,11 +38,16 @@ async def fix_layout_handler(message: types.Message) -> None:
     Handler will correct text written using a wrong keyboard layout and send it back.
     """
     try:
-        if not message.text:
+        text_to_correct = ""
+        if message.text:
+            text_to_correct = message.text
+        elif message.caption:
+            text_to_correct = message.caption
+        else:
             return await message.answer(
                 Translations.get_translation("nothing_to_correct")
             )
-        corrected_text = correct_layout(message.text)
+        corrected_text = correct_layout(text_to_correct)
         return await message.answer(corrected_text)
     except NotSupportedLayoutException:
         return await message.answer(
